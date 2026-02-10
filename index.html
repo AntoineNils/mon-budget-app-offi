@@ -1,24 +1,30 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#1e1e2e"> <title>Budget Pro Dark</title>
+    <meta name="theme-color" content="#1e1e2e">
+    <title>Budget Pro Dark</title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Budget">
+    
+    <link rel="apple-touch-icon" href="./app-icon.jpg">
+
     <link rel="manifest" href="manifest.json">
+
     <style>
         /* --- DESIGN DARK MODE PRO --- */
         :root {
-            --bg-main: #1e1e2e; /* Fond sombre principal (bleu-gris très foncé) */
-            --bg-card: #2d2d3a; /* Fond des cartes (légèrement plus clair) */
+            --bg-main: #1e1e2e;
+            --bg-card: #2d2d3a;
             --text-primary: #ffffff;
             --text-secondary: #a0a0b0;
-            /* Dégradé "Néon" attractif */
             --accent-grad: linear-gradient(135deg, #00cec9, #6c5ce7);
             --green: #00b894;
             --red: #ff7675;
-            --input-bg: #383848; /* Fond des champs de saisie */
+            --input-bg: #383848;
         }
 
         body { 
@@ -27,45 +33,50 @@
             color: var(--text-primary); 
             margin: 0; 
             padding: 0; 
-            padding-bottom: 90px; /* Espace pour le menu du bas */
+            padding-bottom: 90px; /* Espace menu */
             -webkit-font-smoothing: antialiased;
+            /* Empêche le rebond élastique sur tout le corps */
+            overscroll-behavior-y: none;
         }
 
         h2, h3 { font-weight: 700; letter-spacing: 0.5px; }
 
-        /* --- NAVIGATION (BAS) --- */
+        /* --- NAVIGATION --- */
         .navbar {
             position: fixed; bottom: 0; left: 0; width: 100%; 
-            background: var(--bg-card); /* Barre sombre */
+            background: var(--bg-card);
             box-shadow: 0 -5px 20px rgba(0,0,0,0.2); 
             display: flex; justify-content: space-around;
             padding: 12px 0; z-index: 1000;
-            border-t: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: env(safe-area-inset-bottom); /* Gère la barre blanche iPhone X */
+            border-top: 1px solid rgba(255,255,255,0.05);
         }
         .nav-item {
             border: none; background: none; display: flex; flex-direction: column; align-items: center;
             color: var(--text-secondary); font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: 0.3s;
         }
         .nav-item span { font-size: 1.6rem; margin-bottom: 4px; }
-        .nav-item.active { color: #6c5ce7; } /* Couleur active violette */
+        .nav-item.active { color: #6c5ce7; }
         .nav-item.active span { 
             background: var(--accent-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
 
         /* --- PAGES --- */
-        .page { display: none; padding: 20px; animation: fadeIn 0.3s ease; }
+        .page { display: none; padding: 20px; padding-top: 50px; animation: fadeIn 0.3s ease; }
         .page.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Selecteur de mois */
-        .month-select-container { padding: 15px; background: var(--bg-main); position: sticky; top: 0; z-index: 10; text-align: center; }
+        .month-selector-container { 
+            padding: 15px; background: var(--bg-main); position: sticky; top: 0; z-index: 10; text-align: center; 
+            padding-top: env(safe-area-inset-top);
+        }
         .month-select {
             padding: 10px 20px; border-radius: 30px; background: var(--bg-card);
             color: var(--text-primary); border: 1px solid #6c5ce7; font-weight: bold; outline: none;
         }
 
-        /* --- ELEMENTS DASHBOARD --- */
-        /* Carte principale avec dégradé */
+        /* --- ELEMENTS --- */
         .card-hero {
             background: var(--accent-grad); padding: 30px; 
             border-radius: 24px; text-align: center; 
@@ -75,45 +86,40 @@
         .card-hero small { color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
         .big-amount { font-size: 3rem; font-weight: 800; margin: 10px 0; text-shadow: 0 2px 10px rgba(0,0,0,0.2); }
         
-        /* KPI (Entrées/Sorties) */
         .kpi-row { display: flex; gap: 15px; margin-bottom: 30px; }
         .kpi { 
             flex: 1; background: var(--bg-card); padding: 20px; border-radius: 20px; 
             text-align: center; border: 1px solid rgba(255,255,255,0.05);
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
-        .kpi small { color: var(--text-secondary); font-weight: 600; }
         .kpi-val { font-size: 1.4rem; font-weight: 800; margin-top: 5px; }
         .green { color: var(--green); }
         .red { color: var(--red); }
 
-        /* Liste des transactions */
-        .trans-list { list-style: none; padding: 0; }
+        .trans-list { list-style: none; padding: 0; padding-bottom: 20px; }
         .trans-item {
             background: var(--bg-card); border-radius: 18px; padding: 15px 20px; margin-bottom: 12px;
             display: flex; justify-content: space-between; align-items: center;
             border: 1px solid rgba(255,255,255,0.05); position: relative; overflow: hidden;
         }
-        /* Barre de couleur sur le côté */
         .trans-item::before { content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 5px; }
         .trans-item.type-income::before { background-color: var(--green); }
         .trans-item.type-expense::before { background-color: var(--red); }
-
+        
         .trans-desc { font-weight: 700; font-size: 1.05rem; }
         .trans-meta { font-size: 0.85rem; color: var(--text-secondary); margin-top: 4px; }
         .trans-amount { font-weight: 800; font-size: 1.1rem; }
 
-        /* --- FORMULAIRES (Mode Sombre) --- */
+        /* --- FORMULAIRES --- */
         label { display: block; margin-bottom: 10px; font-weight: 700; color: var(--text-primary); margin-left: 5px; }
         input, select {
             width: 100%; padding: 16px; margin-bottom: 20px; border: none;
-            border-radius: 16px; background: var(--input-bg); /* Fond sombre pour les inputs */
+            border-radius: 16px; background: var(--input-bg);
             color: var(--text-primary); font-size: 1rem; box-sizing: border-box;
-            font-weight: 600; outline: none;
+            font-weight: 600; outline: none; appearance: none;
         }
         input:focus, select:focus { box-shadow: 0 0 0 2px #6c5ce7; }
-        input[type="date"] { color-scheme: dark; } /* Calendrier sombre sur mobile */
-
+        
         button.btn-main {
             width: 100%; padding: 18px; background: var(--accent-grad); color: white;
             border: none; border-radius: 16px; font-size: 1.2rem; font-weight: 800; cursor: pointer;
@@ -121,7 +127,7 @@
         }
         button.btn-main:active { transform: scale(0.98); }
 
-        /* --- ANALYSE --- */
+        /* --- CHARTS --- */
         .chart-container {
             background: var(--bg-card); padding: 30px; border-radius: 24px;
             text-align: center; border: 1px solid rgba(255,255,255,0.05);
@@ -136,11 +142,7 @@
             font-size: 1rem; font-weight: 700; text-align: left; cursor: pointer;
             margin-bottom: 15px; display: flex; align-items: center; gap: 15px;
         }
-        .option-icon { font-size: 1.5rem; }
     </style>
-<link rel="apple-touch-icon" href="./logo_carre.jpg">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 <body>
 
@@ -153,32 +155,21 @@
             <small>Solde du mois</small>
             <div id="displayBalance" class="big-amount">0.00 €</div>
         </div>
-
         <div class="kpi-row">
-            <div class="kpi">
-                <small>📈 Entrées</small>
-                <div id="displayIncome" class="kpi-val green">+0 €</div>
-            </div>
-            <div class="kpi">
-                <small>📉 Sorties</small>
-                <div id="displayExpense" class="kpi-val red">-0 €</div>
-            </div>
+            <div class="kpi"><small>📈 Entrées</small><div id="displayIncome" class="kpi-val green">+0 €</div></div>
+            <div class="kpi"><small>📉 Sorties</small><div id="displayExpense" class="kpi-val red">-0 €</div></div>
         </div>
-
         <h3 style="margin-left: 10px;">Historique récent</h3>
-        <div id="emptyMsg" style="text-align: center; color: var(--text-secondary); margin-top: 30px; font-style: italic; display: none;">Rien à signaler.</div>
+        <div id="emptyMsg" style="text-align: center; color: var(--text-secondary); margin-top: 30px; display: none;">Rien à signaler.</div>
         <ul id="list" class="trans-list"></ul>
     </div>
 
     <div id="page-add" class="page">
         <h2 style="text-align:center; margin-bottom:30px;">Nouvelle Opération</h2>
-        
         <label>C'est quoi ?</label>
-        <input type="text" id="inputDesc" placeholder="Ex: Courses, Vinted...">
-        
+        <input type="text" id="inputDesc" placeholder="Ex: Courses...">
         <label>Combien ? (€)</label>
         <input type="number" id="inputAmount" placeholder="0.00" step="0.01" style="font-size: 1.3rem;">
-        
         <label>Catégorie</label>
         <select id="inputCat">
             <option value="Alimentation">🍔 Alimentation</option>
@@ -192,16 +183,13 @@
             <option value="Ventes">📦 Ventes (Revenu)</option>
             <option value="Autre">🔄 Autre</option>
         </select>
-        
         <label>Type</label>
         <select id="inputType">
             <option value="expense">💸 Dépense (-)</option>
             <option value="income">💰 Revenu (+)</option>
         </select>
-        
         <label>Date</label>
         <input type="date" id="inputDate">
-        
         <button class="btn-main" onclick="addTransaction()">VALIDER</button>
     </div>
 
@@ -215,11 +203,11 @@
 
     <div id="page-settings" class="page">
         <h2 style="text-align:center; margin-bottom:30px;">Réglages</h2>
-        <button class="btn-option" onclick="exportCSV()"><span class="option-icon">📊</span> Exporter Excel (CSV)</button>
-        <button class="btn-option" onclick="downloadBackup()"><span class="option-icon">💾</span> Sauvegarder (Backup)</button>
-        <button class="btn-option" onclick="document.getElementById('fileImport').click()"><span class="option-icon">📥</span> Restaurer</button>
+        <button class="btn-option" onclick="exportCSV()"><span>📊</span> Exporter Excel (CSV)</button>
+        <button class="btn-option" onclick="downloadBackup()"><span>💾</span> Sauvegarder (Backup)</button>
+        <button class="btn-option" onclick="document.getElementById('fileImport').click()"><span>📥</span> Restaurer</button>
         <input type="file" id="fileImport" style="display: none;" onchange="importBackup(this)">
-        <p style="text-align: center; color: var(--text-secondary); margin-top: 40px; font-size: 0.8rem;">Budget Dark Pro V7</p>
+        <p style="text-align: center; color: var(--text-secondary); margin-top: 40px; font-size: 0.8rem;">Budget Pro - V7 Standalone</p>
     </div>
 
     <nav class="navbar">
@@ -230,18 +218,15 @@
     </nav>
 
     <script>
-        // --- DONNÉES & COULEURS (Palette Néon) ---
-        // On change le nom de sauvegarde pour repartir sur du propre (V7)
+        // --- LOGIQUE APPLICATION ---
         let db = JSON.parse(localStorage.getItem('budgetV7Dark')) || [];
-        const colors = { 'Alimentation':'#ff7675', 'Loyer':'#d63031', 'Loisirs':'#a29bfe', 'Transport':'#0984e3', 'Shopping':'#fdcb6e', 'Scolarité':'#00cec9', 'Autre':'#b2bec3', 'Parents':'#00b894', 'Intérim':'#00b894', 'Ventes':'#00b894' };
+        const colors = { 'Alimentation':'#ff7675', 'Loyer':'#d63031', 'Loisirs':'#a29bfe', 'Transport':'#0984e3', 'Shopping':'#fdcb6e', 'Scolarité':'#00cec9', 'Autre':'#b2bec3' };
 
-        // --- NAVIGATION ---
         function nav(pageId, btn) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById('page-' + pageId).classList.add('active');
             document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
             if(btn) btn.classList.add('active');
-            // Gestion du sélecteur de mois
             if(pageId === 'add') {
                 document.getElementById('inputDate').valueAsDate = new Date();
                 document.getElementById('monthSelCont').style.display = 'none';
@@ -252,7 +237,6 @@
             window.scrollTo(0,0);
         }
 
-        // --- FONCTIONS PRINCIPALES ---
         function save() {
             localStorage.setItem('budgetV7Dark', JSON.stringify(db));
             initMonthSelector();
@@ -265,17 +249,12 @@
             const cat = document.getElementById('inputCat').value;
             const amount = parseFloat(document.getElementById('inputAmount').value);
             const type = document.getElementById('inputType').value;
-
             if(!date || !desc || !amount) { alert("Merci de tout remplir !"); return; }
-
             db.push({ id: Date.now(), date, desc, cat, amount, type });
             save();
-
             document.getElementById('inputDesc').value = '';
             document.getElementById('inputAmount').value = '';
-            // Petit retour haptique si supporté
-            if (navigator.vibrate) navigator.vibrate(30);
-            nav('home', document.querySelectorAll('.nav-item')[0]); // Retour accueil
+            nav('home', document.querySelectorAll('.nav-item')[0]);
         }
 
         function remove(id) {
@@ -285,7 +264,6 @@
             }
         }
 
-        // --- AFFICHAGE & CALCULS ---
         function getMonth(dateStr) { return dateStr.substring(0, 7); }
 
         function initMonthSelector() {
@@ -294,7 +272,6 @@
             const months = [...new Set(db.map(t => getMonth(t.date)))].sort().reverse();
             const today = getMonth(new Date().toISOString());
             if(!months.includes(today)) months.unshift(today);
-
             sel.innerHTML = months.map(m => {
                  const [y, mo] = m.split('-');
                  const label = new Date(y, mo - 1).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
@@ -306,32 +283,23 @@
         function updateUI() {
             const selMonth = document.getElementById('monthSelector').value;
             const data = db.filter(t => getMonth(t.date) === selMonth).sort((a,b) => new Date(b.date) - new Date(a.date));
-
             let inc = 0, exp = 0;
             const list = document.getElementById('list');
             list.innerHTML = '';
-
             data.forEach(t => {
                 if(t.type === 'income') inc += t.amount; else exp += t.amount;
                 const li = document.createElement('li');
                 li.className = `trans-item type-${t.type}`;
                 li.innerHTML = `
-                    <div style="flex:1">
-                        <div class="trans-desc">${t.desc}</div>
-                        <div class="trans-meta">${new Date(t.date).getDate()}/${new Date(t.date).getMonth()+1} • ${t.cat}</div>
-                    </div>
-                    <div class="trans-amount" style="color:${t.type==='income'?'var(--green)':'var(--red)'}">
-                        ${t.type==='income'?'+':'-'}${t.amount.toFixed(2)}€
-                    </div>
+                    <div style="flex:1"><div class="trans-desc">${t.desc}</div><div class="trans-meta">${new Date(t.date).getDate()}/${new Date(t.date).getMonth()+1} • ${t.cat}</div></div>
+                    <div class="trans-amount" style="color:${t.type==='income'?'var(--green)':'var(--red)'}">${t.type==='income'?'+':'-'}${t.amount.toFixed(2)}€</div>
                     <button onclick="remove(${t.id})" style="border:none;background:var(--input-bg);color:var(--red);width:30px;height:30px;border-radius:50%;margin-left:15px;font-weight:bold;">✕</button>
                 `;
                 list.appendChild(li);
             });
-
             document.getElementById('displayIncome').innerText = `+${inc.toFixed(0)} €`;
             document.getElementById('displayExpense').innerText = `-${exp.toFixed(0)} €`;
             document.getElementById('displayBalance').innerText = `${(inc - exp).toFixed(2)} €`;
-            
             document.getElementById('emptyMsg').style.display = data.length ? 'none' : 'block';
             drawChart(data, exp);
         }
@@ -344,7 +312,6 @@
             }
             const cats = {};
             data.filter(t=>t.type==='expense').forEach(t => cats[t.cat] = (cats[t.cat]||0) + t.amount);
-            
             let grad = [], start = 0, leg = '';
             Object.keys(cats).sort((a,b)=>cats[b]-cats[a]).forEach(c => {
                 const pct = (cats[c]/totalExp)*100;
@@ -353,23 +320,17 @@
                 leg += `<div class="legend-item"><span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${col};margin-right:10px;"></span>${c}</span><span>${cats[c].toFixed(0)}€ (${pct.toFixed(0)}%)</span></div>`;
                 start += pct;
             });
-            
             document.getElementById('chart').style.background = `conic-gradient(${grad.join(', ')})`;
             document.getElementById('legend').innerHTML = leg;
         }
 
-        // --- IMPORT/EXPORT ---
         function exportCSV() { let csv="Date;Quoi;Cat;Montant\n"; db.forEach(t=>csv+=`${t.date};${t.desc};${t.cat};${t.amount}\n`); const a=document.createElement("a");a.href="data:text/csv;charset=utf-8,"+encodeURI(csv);a.download="budget.csv";a.click(); }
         function downloadBackup() { const a=document.createElement("a");a.href="data:text/json;charset=utf-8,"+encodeURIComponent(JSON.stringify(db));a.download="budget_dark.json";a.click(); }
         function importBackup(i) { const r=new FileReader(); r.onload=e=>{db=JSON.parse(e.target.result);save();alert("Restauré !");};r.readAsText(i.files[0]); }
 
-        // INIT
         initMonthSelector();
-        // Force l'affichage si pas de données au début
         if(db.length === 0) updateUI();
-        // Sélectionne l'onglet accueil par défaut
         nav('home', document.querySelectorAll('.nav-item')[0]);
-
     </script>
 </body>
 </html>
