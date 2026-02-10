@@ -1,4 +1,12 @@
-"icons": [
+{
+  "name": "Budget Pro",
+  "short_name": "Budget",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#1e1e2e",
+  "theme_color": "#1e1e2e",
+  "orientation": "portrait",
+  "icons": [
     {
       "src": "./logo_carre.jpg",
       "sizes": "192x192",
@@ -10,3 +18,4 @@
       "type": "image/jpeg"
     }
   ]
+}
