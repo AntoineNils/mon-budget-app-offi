@@ -1,11 +1,11 @@
 "icons": [
     {
-      "src": "./logocarré.jpg",
+      "src": "./logo_carre.jpg",
       "sizes": "192x192",
       "type": "image/jpeg"
     },
     {
-      "src": "./logocarré.jpg",
+      "src": "./logo_carre.jpg",
       "sizes": "512x512",
       "type": "image/jpeg"
     }
